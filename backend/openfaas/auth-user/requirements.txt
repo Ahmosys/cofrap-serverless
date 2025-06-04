@@ -1,0 +1,6 @@
+pyqrcode
+pypng
+psycopg2-binary
+cryptography
+pyotp
+bcrypt
