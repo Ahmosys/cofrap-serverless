@@ -8,3 +8,13 @@ functions:
     handler: ./generate-password
     image: generate-password:latest
 
+  generate-2fa:
+    lang: python3-http-debian
+    handler: ./generate-2fa
+    image: generate-2fa:latest
+
+  auth-user:
+    lang: python3-http-debian
+    handler: ./auth-user
+    image: auth-user:latest
+
