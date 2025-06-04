@@ -36,7 +36,7 @@ def handle(event, context):
 
     # Check if password has expired (6 months)
     if time.time() - gendate > 6 * 30 * 24 * 3600:
-        cur.execute("UPDATE users SET expired=true WHERE username=%s", (username,))
+        cur.execute("UPDATE users SET expired=True WHERE username=%s", (username,))
         conn.commit()
         return {"statusCode": 403, "body": "Password expired"}
     

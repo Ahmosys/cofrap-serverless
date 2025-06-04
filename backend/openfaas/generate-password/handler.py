@@ -55,12 +55,6 @@ def handle(event, context):
         gendate BIGINT,
         expired BOOLEAN
     )""")
-    
-    # Check if user exists
-    cur.execute("SELECT id FROM users WHERE username = %s", (username,))
-    if not cur.fetchone():
-        cur.close()
-        return {"statusCode": 404, "body": "User not found"}
         
     # Insert or update the user record with the new password and generation date
     cur.execute("""INSERT INTO users (username, password, gendate, expired)
