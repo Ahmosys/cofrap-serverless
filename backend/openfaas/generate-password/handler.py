@@ -14,8 +14,12 @@ def initConnection():
         pwd = s.read().strip()
     # Establish a new connection using environment variables for other credentials
     dbConn = psycopg2.connect(
-        dbname=os.getenv('DB_NAME'), user=os.getenv('DB_USER'),
-        password=pwd, host=os.getenv('DB_HOST'), port=os.getenv('DB_PORT'))
+        dbname=os.getenv('DB_NAME'), 
+        user=os.getenv('DB_USER'),
+        password=pwd, 
+        host=os.getenv('DB_HOST'), 
+        port=os.getenv('DB_PORT')
+    )
     return dbConn
 
 def handle(event, context):
@@ -25,9 +29,13 @@ def handle(event, context):
     if not username:
         return {"statusCode": 400, "body": "Missing username"}
 
+    # Convert the username to a string if it's a bytes object
+    if isinstance(username, bytes):
+        username = username.decode()
+
     # Generate a secure random password (24 characters) and hash it
     raw_pwd = ''.join(secrets.choice(string.ascii_letters + string.digits + "!@#$%^&*()_+") for _ in range(24))
-    hashed = bcrypt.hashpw(raw_pwd.encode(), bcrypt.gensalt()).decode()
+    hashed_pwd = bcrypt.hashpw(raw_pwd.encode(), bcrypt.gensalt()).decode()
 
     # Generate a QR code from the raw password
     qr = pyqrcode.create(raw_pwd)
@@ -47,14 +55,21 @@ def handle(event, context):
         gendate BIGINT,
         expired BOOLEAN
     )""")
+    
+    # Check if user exists
+    cur.execute("SELECT id FROM users WHERE username = %s", (username,))
+    if not cur.fetchone():
+        cur.close()
+        return {"statusCode": 404, "body": "User not found"}
+        
     # Insert or update the user record with the new password and generation date
     cur.execute("""INSERT INTO users (username, password, gendate, expired)
-        VALUES (%s, %s, %s, false)
+        VALUES (%s, %s, %s, %s)
         ON CONFLICT (username) DO UPDATE
         SET password = EXCLUDED.password,
             gendate = EXCLUDED.gendate,
-            expired = false""",
-        (username, hashed, int(datetime.now(UTC).timestamp())))
+            expired = False""",
+        (username, hashed_pwd, int(datetime.now(UTC).timestamp()), False))
     # Commit changes and close the cursor
     conn.commit()
     cur.close() 

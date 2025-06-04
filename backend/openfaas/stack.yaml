@@ -16,3 +16,17 @@ functions:
       DB_PORT: 5432
     secrets:
       - postgres-password
+  generate-2fa:
+    lang: python3-http-debian
+    handler: ./generate-2fa
+    image: ahmosys/generate-2fa:latest
+    build_options:
+      - libpq
+    environment:
+      DB_NAME: "cofrap"
+      DB_USER: "cofrap"
+      DB_HOST: "postgresql.default.svc.cluster.local"
+      DB_PORT: 5432
+    secrets:
+      - postgres-password
+      - mfa-key
