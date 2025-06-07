@@ -4,6 +4,7 @@ import pyotp
 
 dbConn = None
 
+# Initialize DB connection if not already done
 def initConnection():
     global dbConn
     if dbConn:
@@ -20,11 +21,29 @@ def initConnection():
     return dbConn
 
 def handle(event, context):
+    # Handle CORS pre-flight request
+    if event.method == "OPTIONS":
+        return {
+            "statusCode": 200,
+            "body": "",
+            "headers": {
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "POST, OPTIONS",
+                "Access-Control-Allow-Headers": "Content-Type"
+            }
+        }
+
     # Extract the username from the request body
     username = event.body.strip()
     if not username:
-        return {"statusCode": 400, "body": "Missing username"}
-    
+        return {
+            "statusCode": 400,
+            "body": "Missing username",
+            "headers": {
+                "Access-Control-Allow-Origin": "*"
+            }
+        }
+
     # Convert the username to a string if it's a bytes object
     if isinstance(username, bytes):
         username = username.decode()
@@ -37,15 +56,23 @@ def handle(event, context):
     cur.execute("SELECT id FROM users WHERE username = %s", (username,))
     if not cur.fetchone():
         cur.close()
-        return {"statusCode": 404, "body": "User not found"}
+        return {
+            "statusCode": 404,
+            "body": "User not found",
+            "headers": {
+                "Access-Control-Allow-Origin": "*"
+            }
+        }
 
     # Generate a random secret
     secret = pyotp.random_base32()
+
+    # Create a QR code from the TOTP URI
     qr = pyqrcode.create(pyotp.totp.TOTP(secret).provisioning_uri(name=username, issuer_name="CofrapAuth"))
     buffer = io.BytesIO()
     qr.png(buffer, scale=5)
     encoded_qr = base64.b64encode(buffer.getvalue()).decode()
-    
+
     # Encrypt the secret
     with open('/var/openfaas/secrets/mfa-key', 'r') as s:
         mfa_key = s.read().strip()
@@ -57,5 +84,12 @@ def handle(event, context):
     conn.commit()
     cur.close()
 
-    # Return the QR code
-    return {"statusCode": 200, "body": encoded_qr, "headers": {"Content-Type": "text/plain"}}
+    # Return the QR code image encoded in base64
+    return {
+        "statusCode": 200,
+        "body": encoded_qr,
+        "headers": {
+            "Content-Type": "text/plain",
+            "Access-Control-Allow-Origin": "*"
+        }
+    }
