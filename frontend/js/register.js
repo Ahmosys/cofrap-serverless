@@ -40,10 +40,16 @@ async function fetchFromAPI(endpoint, body) {
  */
 function generateQRCodeHTML(qrPwd, qr2fa) {
   return `
-    <p>QR code pour le mot de passe :</p>
-    <img src="data:image/png;base64,${qrPwd}" alt="QR Code Password">
-    <p>QR code pour configurer Google Authenticator :</p>
-    <img src="data:image/png;base64,${qr2fa}" alt="QR Code 2FA">
+    <div class="qr-container">
+      <div class="qr-block">
+        <p>QR Code mot de passe</p>
+        <img src="data:image/png;base64,${qrPwd}" alt="QR Code Password" class="qr-image">
+      </div>
+      <div class="qr-block">
+        <p>QR Code 2FA</p>
+        <img src="data:image/png;base64,${qr2fa}" alt="QR Code 2FA" class="qr-image">
+      </div>
+    </div>
   `;
 }
 
@@ -56,6 +62,8 @@ async function handleRegistration(e) {
 
   const username = document.getElementById("reg-username").value.trim();
   const qrDiv = document.getElementById("qr-result");
+  const submitButton = document.querySelector('#register-form button[type="submit"]');
+
   qrDiv.innerHTML = "";
 
   if (!username) {
@@ -63,19 +71,26 @@ async function handleRegistration(e) {
     return;
   }
 
+  submitButton.disabled = true;
+  submitButton.setAttribute("aria-busy", "true");
+
   try {
     // First generate password
-    qrDiv.innerHTML = "<p>Génération du mot de passe en cours...</p>";
+    submitButton.textContent = "Génération du mot de passe en cours...";
     const qrPwd = await fetchFromAPI(ENDPOINTS.GENERATE_PASSWORD, username);
 
     // Then generate 2FA
-    qrDiv.innerHTML = "<p>Génération du code 2FA en cours...</p>";
+    submitButton.textContent = "Génération du code 2FA en cours...";
     const qr2fa = await fetchFromAPI(ENDPOINTS.GENERATE_2FA, username);
 
     // Display both QR codes
     qrDiv.innerHTML = generateQRCodeHTML(qrPwd, qr2fa);
   } catch (err) {
     qrDiv.innerHTML = `<strong>Erreur:</strong> ${err.message}`;
+  } finally {
+    submitButton.textContent = "Créer le compte";
+    submitButton.disabled = false;
+    submitButton.removeAttribute("aria-busy");
   }
 }
 

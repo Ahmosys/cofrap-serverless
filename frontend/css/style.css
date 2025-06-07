@@ -1,10 +1,38 @@
 main.container {
-  max-width: 500px;
-  margin: auto;
+  max-width: 600px;
   text-align: center;
+  padding: 1rem;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   height: 100vh;
+}
+
+.header-logo {
+  margin-bottom: 1rem;
+  width: 120px;
+}
+
+.qr-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 2rem;
+  margin-top: 1rem;
+}
+
+.qr-block {
+  text-align: center;
+  max-width: 250px;
+}
+
+.qr-image {
+  width: 200px;
+  height: 200px;
+  object-fit: contain;
+  border: 1px solid #ccc;
+  padding: 8px;
+  border-radius: 8px;
+  background: #fff;
 }

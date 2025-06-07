@@ -66,6 +66,11 @@ async function handleLogin(e) {
   const password = document.getElementById("password").value.trim();
   const otp = document.getElementById("otp").value.trim();
   const resultDiv = document.getElementById("login-result");
+  const submitButton = document.querySelector('#login-form button[type="submit"]');
+
+  submitButton.disabled = true;
+  submitButton.setAttribute("aria-busy", "true");
+  submitButton.textContent = "Connexion en cours...";
 
   // Validate required fields
   if (!username || !password || !otp) {
@@ -102,6 +107,10 @@ async function handleLogin(e) {
     }
   } catch (err) {
     resultDiv.innerHTML = `<strong>Erreur:</strong> ${err.message}`;
+  } finally {
+    submitButton.textContent = "Se connecter";
+    submitButton.disabled = false;
+    submitButton.removeAttribute("aria-busy");
   }
 }
 

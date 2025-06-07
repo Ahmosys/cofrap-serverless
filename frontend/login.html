@@ -2,13 +2,17 @@
 <html lang="fr">
 <head>
   <meta charset="utf-8">
-  <title>Connexion</title>
+  <title>Connexion - Cofrap</title>
   <link rel="stylesheet" href="lib/pico.min.css">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
   <main class="container">
-    <h2>Connexion</h2>
+    <img src="img/cofrap-logo.png" alt="Logo Cofrap" class="header-logo">
+    <hgroup>
+      <h1>Connexion</h1>
+      <p>Connectez-vous à votre espace personnel.</p>
+    </hgroup>
     <form id="login-form">
       <label for="username">Nom d'utilisateur</label>
       <input type="text" id="username" required>
@@ -17,7 +21,7 @@
       <input type="password" id="password" required>
 
       <label for="otp">Code 2FA</label>
-      <input type="text" id="otp" required>
+      <input type="number" id="otp" required>
 
       <button type="submit">Se connecter</button>
     </form>
