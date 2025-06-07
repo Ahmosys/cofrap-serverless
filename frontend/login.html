@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <title>Connexion</title>
+  <link rel="stylesheet" href="lib/pico.min.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <main class="container">
+    <h2>Connexion</h2>
+    <form id="login-form">
+      <label for="username">Nom d'utilisateur</label>
+      <input type="text" id="username" required>
+
+      <label for="password">Mot de passe</label>
+      <input type="password" id="password" required>
+
+      <label for="otp">Code 2FA</label>
+      <input type="text" id="otp" required>
+
+      <button type="submit">Se connecter</button>
+    </form>
+    <div id="login-result"></div>
+    <p><a href="register.html">Pas encore inscrit ?</a></p>
+  </main>
+  <script src="js/login.js"></script>
+</body>
+</html>
