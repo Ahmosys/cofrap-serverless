@@ -74,7 +74,7 @@ async function handleLogin(e) {
 
   // Validate required fields
   if (!username || !password || !otp) {
-    resultDiv.innerHTML = `<strong>${ERROR_MESSAGES.REQUIRED_FIELDS}</strong>`;
+    resultDiv.innerHTML = `<small id="invalid-helper">${ERROR_MESSAGES.REQUIRED_FIELDS}</small>`;
     return;
   }
 
@@ -86,14 +86,14 @@ async function handleLogin(e) {
     );
 
     if (authResponse.includes("expired")) {
-      resultDiv.innerHTML = `<strong>${ERROR_MESSAGES.PASSWORD_EXPIRED}</strong>`;
+      resultDiv.innerHTML = `<small id="invalid-helper">${ERROR_MESSAGES.PASSWORD_EXPIRED}</small>`;
 
       // First generate password
-      resultDiv.innerHTML = `<strong>${ERROR_MESSAGES.GENERATING_PASSWORD}</strong>`;
+      resultDiv.innerHTML = `<small id="invalid-helper">${ERROR_MESSAGES.GENERATING_PASSWORD}</small>`;
       const qrPwd = await fetchFromAPI(ENDPOINTS.GENERATE_PASSWORD, username);
 
       // Then generate 2FA
-      resultDiv.innerHTML = `<strong>${ERROR_MESSAGES.GENERATING_2FA}</strong>`;
+      resultDiv.innerHTML = `<small id="invalid-helper">${ERROR_MESSAGES.GENERATING_2FA}</small>`;
       const qr2fa = await fetchFromAPI(ENDPOINTS.GENERATE_2FA, username);
 
       // Display both QR codes
@@ -103,10 +103,10 @@ async function handleLogin(e) {
       // Redirect to success page with confetti
       redirectToSuccess(username);
     } else {
-      resultDiv.innerHTML = `<strong>${authResponse}</strong>`;
+      resultDiv.innerHTML = `<small id="invalid-helper">${authResponse}</small>`;
     }
   } catch (err) {
-    resultDiv.innerHTML = `<strong>Erreur:</strong> ${err.message}`;
+    resultDiv.innerHTML = `<small id="invalid-helper">Erreur:</small> ${err.message}`;
   } finally {
     submitButton.textContent = "Se connecter";
     submitButton.disabled = false;
