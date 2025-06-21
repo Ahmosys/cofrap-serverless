@@ -7,105 +7,105 @@
 
 ## 📋 Description
 
-COFRAP Serverless est une application d'authentification moderne construite avec OpenFaaS, offrant un système d'inscription et de connexion sécurisé avec authentification à deux facteurs (2FA). Le projet utilise une architecture serverless pour une scalabilité optimale et une gestion simplifiée des ressources.
+COFRAP Serverless is a modern authentication application built with OpenFaaS, offering a secure registration and login system with two-factor authentication (2FA). The project uses a serverless architecture for optimal scalability and simplified resource management.
 
-## 🚀 Fonctionnalités
+## 🚀 Features
 
-- ✨ **Architecture Serverless** : Basée sur OpenFaaS pour une scalabilité automatique
-- 🔐 **Authentification sécurisée** : Système de connexion avec génération de mots de passe sécurisés
-- 📱 **Authentification 2FA** : Support complet de l'authentification à deux facteurs
-- 🗄️ **Base de données PostgreSQL** : Stockage sécurisé des données utilisateur
-- 🎨 **Interface utilisateur moderne** : Frontend responsive avec framework CSS Pico
-- 🐳 **Containerisation** : Support Docker pour un déploiement simplifié
+- ✨ **Serverless architecture**: based on OpenFaaS for automatic scalability
+- 🔐 **Secure authentication**: Login system with secure password generation
+- 📱 **2FA authentication**: Full support for two-factor authentication
+- 🗄️ **PostgreSQL database**: Secure storage of user data
+- 🎨 **Modern user interface**: responsive frontend with Pico CSS framework
+- 🐳 **Containerization** : Docker support for simplified deployment
 
 ## 🏗️ Architecture
 
-Le projet est organisé en trois parties principales :
+The project is organized into three main parts:
 
 ```
 cofrap-serverless/
 ├── backend/
 │   ├── openfaas/          # Functions serverless
-│   │   ├── auth-user/     # Authentification utilisateur
-│   │   ├── generate-2fa/  # Génération codes 2FA
-│   │   └── generate-password/ # Génération mots de passe
-│   ├── sql/               # Scripts base de données
-│   └── vagrant/           # Configuration infrastructure
-├── frontend/              # Interface utilisateur
-│   ├── css/              # Styles personnalisés
-│   ├── js/               # Scripts JavaScript
-│   └── lib/              # Bibliothèques externes
-└── docs/                 # Documentation
+│   │   ├── auth-user/     # User authentication
+│   │   ├── generate-2fa/  # 2FA code generation
+│   │   └── generate-password/ # Password generation
+│   ├── sql/               # Database scripts
+│   └── vagrant/           # Infrastructure configuration
+├── frontend/              # User interface
+│   ├── css/              # Custom styles
+│   ├── js/               # JavaScript Scripts
+│   └── lib/              # External libs
+└── docs/                 # Documentations
 ```
 
-## 📋 Prérequis
+## 📋 Requirements
 
-- **OpenFaaS CLI** : Pour le déploiement des functions
-- **Kubernetes** : Cluster pour l'exécution d'OpenFaaS
-- **PostgreSQL** : Base de données (peut être déployée sur Kubernetes)
-- **Docker** : Pour la construction des images
-- **Python 3.x** : Pour le développement des functions
+- **OpenFaaS CLI** : For deploying functions
+- **Kubernetes** : Cluster for running OpenFaaS
+- **PostgreSQL** : Database (can be deployed on Kubernetes)
+- **Docker** : For building images
+- **Python 3.x** : For developing functions
 
 ## 🛠️ Installation
 
-### 1. Configuration de l'environnement
+### 1. Environment configuration
 
 ```bash
-# Cloner le repository
+# Clone the repository
 git clone https://github.com/Ahmosys/cofrap-serverless.git
 cd cofrap-serverless
 ```
 
-### 2. Déploiement de la base de données
+### 2. Database deployment
 
 ```bash
-# Utiliser le script SQL d'initialisation
+# Use the SQL initialization script
 kubectl apply -f backend/sql/init.sql
 ```
 
-### 3. Configuration des secrets
+### 3. Secrets configuration
 
 ```bash
-# Créer les secrets OpenFaaS
+# Create OpenFaaS secrets
 faas-cli secret create postgres-password --from-literal="your-db-password"
 faas-cli secret create mfa-key --from-literal="your-mfa-secret-key"
 ```
 
-### 4. Déploiement des functions
+### 4. Deploy functions
 
 ```bash
-# Naviguer vers le dossier OpenFaaS
+# Navigate to the OpenFaaS folder
 cd backend/openfaas
 
-# Construire et déployer toutes les functions
+# Build and deploy all functions
 faas-cli up -f stack.yaml
 ```
 
-### 5. Déploiement du frontend
+### 5. Frontend deployment
 
 ```bash
-# Construire l'image Docker du frontend
+# Building the frontend Docker image
 cd frontend
 docker build -t cofrap-frontend .
 
-# Ou servir directement les fichiers statiques
+# Or serve static files directly
 python -m http.server 8000
 ```
 
 ## 🔧 Configuration
 
-### Variables d'environnement
+### Environment variables
 
-Les functions OpenFaaS utilisent les variables d'environnement suivantes :
+OpenFaaS functions use the following environment variables:
 
-- `DB_NAME` : Nom de la base de données (défaut: "cofrap")
-- `DB_USER` : Utilisateur de la base de données (défaut: "cofrap")
-- `DB_HOST` : Hôte de la base de données
-- `DB_PORT` : Port de la base de données (défaut: 5432)
+- `DB_NAME`: Database name (default: “cofrap”)
+- `DB_USER`: Database user (default: “cofrap”)
+- `DB_HOST`: Database host
+- `DB_PORT`: Database port (default: 5432)
 
-### Gateway OpenFaaS
+### OpenFaaS Gateway
 
-Modifiez l'URL du gateway dans `stack.yaml` :
+Modify the gateway URL in `stack.yaml` :
 
 ```yaml
 provider:
@@ -114,44 +114,44 @@ provider:
 
 ## 🌐 API Endpoints
 
-### Functions disponibles
+### Available functions
 
 | Function | Endpoint | Description |
 |----------|----------|-------------|
-| `generate-password` | `/function/generate-password` | Génère un mot de passe sécurisé pour un utilisateur |
-| `generate-2fa` | `/function/generate-2fa` | Génère un secret 2FA et retourne le QR code |
-| `auth-user` | `/function/auth-user` | Authentifie un utilisateur avec login/password/2FA |
+| `generate-password` | `/function/generate-password` | Generates a secure password for a user and return a QR code |
+| `generate-2fa` | `/function/generate-2fa` | Generates a 2FA secret for an existing user and returns the QR code |
+| `auth-user` | `/function/auth-user` | Authenticates a user with login / password / 2FA code |
 
 ### Utilisation
 
 ```bash
-# Créer un compte utilisateur
+# Create a user account
 curl -X POST http://gateway/function/generate-password \
   -d '{"username": "testuser"}'
 
-# Générer un code 2FA
+# Generate a 2FA code
 curl -X POST http://gateway/function/generate-2fa \
   -d '{"username": "testuser"}'
 
-# Authentifier un utilisateur
+# Authenticate a user
 curl -X POST http://gateway/function/auth-user \
   -d '{"username": "testuser", "password": "password", "token": "123456"}'
 ```
 
-## 🎨 Interface utilisateur
+## 🎨 User interface
 
-L'interface utilisateur comprend :
+The user interface includes :
 
-- **index.html** : Page d'inscription
-- **login.html** : Page de connexion
-- **auth-success.html** : Page de confirmation d'authentification
+- **index.html**: Registration page
+- **login.html**: Login page
+- **auth-success.html**: Authentication confirmation page
 
-### Fonctionnalités frontend
+### Frontend features
 
-- Formulaire d'inscription utilisateur
-- Génération et affichage du QR code 2FA
-- Interface de connexion avec support 2FA
-- Design responsive avec Pico CSS
+- User registration form
+- 2FA QR code generation and display
+- Login interface with 2FA support
+- Responsive design with Pico CSS
 
 ## 🐳 Docker
 
@@ -165,48 +165,50 @@ docker run -p 8080:80 cofrap-frontend
 
 ### Functions
 
-Les functions sont automatiquement containerisées par OpenFaaS lors du déploiement.
+Functions are automatically containerized by OpenFaaS during deployment.
 
 ## 📊 Monitoring
 
-OpenFaaS fournit des métriques intégrées accessibles via :
+OpenFaaS provides integrated metrics accessible via :
 
-- Interface web OpenFaaS : `http://gateway/ui/`
-- Métriques Prometheus : `http://gateway/metrics`
+- OpenFaaS web interface: `http://gateway/ui/`
+- Prometheus metrics: `http://gateway/metrics`
 
-## 🔒 Sécurité
+## 🔒 Security
 
-- Mots de passe hashés en base de données
-- Authentification 2FA avec TOTP
-- Secrets gérés via OpenFaaS
-- Communication sécurisée entre components
+- Database hashed passwords with [Bcrypt](https://pypi.org/project/bcrypt/) and 2FA secrets with [Fernet](https://cryptography.io/en/latest/fernet/) (symmetric encryption)
+- 2FA authentication with TOTP
+- Secrets managed via OpenFaaS
+- Secure communication between components
 
-## 🤝 Contribution
+## 🤝 Contribute
 
-1. Fork le projet
-2. Créez votre branche feature (`git checkout -b feature/amazing-feature`)
-3. Committez vos changements (`git commit -m 'Add amazing feature'`)
-4. Push vers la branche (`git push origin feature/amazing-feature`)
-5. Ouvrez une Pull Request
+1. Fork the project
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to your branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
 ## 📄 License
 
-Ce projet est sous licence MIT. Voir le fichier [LICENSE](LICENSE) pour plus de détails.
+This project is licensed under the MIT license. See the [LICENSE](LICENSE) file for details.
 
 ## 🙋‍♂️ Support
 
-Pour toute question ou problème :
+If you have any questions or problems :
 
-1. Consultez la [documentation](docs/)
-2. Ouvrez une [issue](https://github.com/Ahmosys/cofrap-serverless/issues)
-3. Contactez l'équipe de développement
+1. Consult the [documentation](docs/)
+2. Open an [issue](https://github.com/Ahmosys/cofrap-serverless/issues)
+3. Contact the development team
 
 ## 🔗 Liens utiles
 
-- [Documentation OpenFaaS](https://docs.openfaas.com/)
+- [OpenFaaS Documentation](https://docs.openfaas.com/)
 - [Pico CSS Framework](https://picocss.com/)
 - [PostgreSQL Documentation](https://www.postgresql.org/docs/)
 
 ---
 
-*Développé avec ❤️ par l'équipe COFRAP*
+*Developed with ❤️ by the COFRAP team*.
+<br>
+@ahmosys (H.R), @MasWap (L.L), @ys8o (B.G), @louisalr (L.A)
