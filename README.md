@@ -122,20 +122,23 @@ provider:
 | `generate-2fa` | `/function/generate-2fa` | Generates a 2FA secret for an existing user and returns the QR code |
 | `auth-user` | `/function/auth-user` | Authenticates a user with login / password / 2FA code |
 
-### Utilisation
+### Usage
 
 ```bash
 # Create a user account
 curl -X POST http://gateway/function/generate-password \
-  -d '{"username": "testuser"}'
+  -H "Content-Type: text/plain" \
+  --data "testuser"
 
 # Generate a 2FA code
 curl -X POST http://gateway/function/generate-2fa \
-  -d '{"username": "testuser"}'
+  -H "Content-Type: text/plain" \
+  --data "testuser"
 
 # Authenticate a user
 curl -X POST http://gateway/function/auth-user \
-  -d '{"username": "testuser", "password": "password", "token": "123456"}'
+  -H "Content-Type: text/plain" \
+  --data "testuser,password,otp-code"
 ```
 
 ## 🎨 User interface
@@ -153,15 +156,33 @@ The user interface includes :
 - Login interface with 2FA support
 - Responsive design with Pico CSS
 
-## 🐳 Docker
+##  🎨 Frontend Deployment
 
-### Frontend
+### 🐳 Docker Deploy
 
 ```bash
 cd frontend
 docker build -t cofrap-frontend .
 docker run -p 8080:80 cofrap-frontend
 ```
+### ☸️ Kubernetes Deploy 
+
+The project can also be deployed in a local or remote Kubernetes environment. In our case, we used K3S on a virtualized architecture, with a mono-master cluster configuration and a worker node. 
+The frontend was containerized with NGINX (see Docker section) and deployed in Kubernetes via the following files:
+
+- `frontend-deployment.yaml` : describes the pod and allocated resources
+- `frontend-service.yaml` : exposes the service on a fixed NodePort
+
+```bash
+kubectl apply -f frontend-deployment.yaml
+kubectl apply -f frontend-service.yaml
+```
+
+By default, the service is exposed on port 31111 :
+```http
+http://<node-ip>:31111
+```
+See the `frontend/k8s/` folder for access to YAML files.
 
 ### Functions
 
@@ -201,7 +222,7 @@ If you have any questions or problems :
 2. Open an [issue](https://github.com/Ahmosys/cofrap-serverless/issues)
 3. Contact the development team
 
-## 🔗 Liens utiles
+## 🔗 Useful links
 
 - [OpenFaaS Documentation](https://docs.openfaas.com/)
 - [Pico CSS Framework](https://picocss.com/)
