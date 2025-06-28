@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cofrap-frontend
+  labels:
+    app: cofrap-frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cofrap-frontend
+  template:
+    metadata:
+      labels:
+        app: cofrap-frontend
+    spec:
+      containers:
+        - name: cofrap-frontend
+          image: ahmosys/cofrap-frontend:lastest
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "100m"
+            limits:
+              memory: "128Mi"
+              cpu: "250m"
