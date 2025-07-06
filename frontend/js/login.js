@@ -22,7 +22,7 @@ function redirectToSuccess(username) {
   // Store username in sessionStorage for the success page
   sessionStorage.setItem('authenticatedUser', username);
   // Redirect to success page
-  window.location.href = '/frontend/auth-success.html';
+  window.location.href = '/auth-success.html';
 }
 
 /**

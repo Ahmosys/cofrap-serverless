@@ -42,5 +42,5 @@ function triggerConfetti() {
  */
 function logout() {
     sessionStorage.removeItem('authenticatedUser');
-    window.location.href = '/frontend/login.html';
+    window.location.href = '/login.html';
 }
