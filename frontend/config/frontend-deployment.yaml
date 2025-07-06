@@ -14,6 +14,6 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: ahmosys/frontend-cofrap:latest
+          image: ahmosys/cofrap-frontend:latest
           ports:
             - containerPort: 80
